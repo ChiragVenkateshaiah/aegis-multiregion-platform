@@ -4,7 +4,22 @@
 
 ---
 
-## 📌 Overview
+## 🌎 Project Overview
+
+AEGIS is an infrastructure engineering project designed to simulate a **resilient cloud platform** operating under real-world distributed system constraints.
+
+The project explores how modern cloud platforms are designed to handle:
+
+- Regional failures
+- Distributed workloads
+- Service scalability
+- Infrastructure automation
+- Observability and reliability engineering
+
+The goal is to explore how **modern cloud platforms are architected and operated in production **environments.**
+
+---
+
 
 AEGIS is a cloud-native, event-driven infrastructure platform designed to demonstrate:
 
@@ -19,26 +34,39 @@ This project simulates the responsibilites of Platform Engineering team inside a
 
 ---
 
+## ✍🏼 Engineering Blog Series
+
+The engineering journey behind AEGIS is documented as a technical blog series.
+
+Part 1 - Development Environment Setup
+Part 2 - Multi-Region Architecture Design *(coming next)*
+Part 3 - AWS Network Topology
+Part 4 - Infrastructure as Code
+
+---
+
+
 ## 🎯 Vision
 
 > Design for failure. Operate for resilience. Optimize for cost.
 
-AEGIS models how modern distributed systems should be architected under real-world constraints:
+AEGIS explores how modern distributed systems are designed under real-world constraints:
 
 - Infrastructure failure is inevitable
 - Regional outages are possible
 - Latency and scale are unpredictable
-- Cost constraints are real
+- Cost constraints influence architecture decisions
 
 The system evolves from a single-region deployment to a multi-region resilient architecture.
 
 ---
 
 ## 🏗 High-Level Architecture
-(*Insert architecture diagram image here once created*)
+![AEGIS Architecture](/diagrams/v0.1_architecture_diagram.png)
 
-Core Flow:
+Core request flow:
 
+User Request
 - Application Load Balancer
 - API Service (Go)
 - SQS (Async Processing)
@@ -68,7 +96,7 @@ Future Evolution:
 - EC2
 - RDS
 - SQS
-- ALB
+- Application Load Balancer
 - Route53 (Phase II+)
 - EKS (Phase II)
 
@@ -89,7 +117,7 @@ Future Evolution:
 
 - Prometheus
 - Grafana
-- CloudWatch
+- AWS CloudWatch
 
 ---
 
@@ -99,7 +127,7 @@ Future Evolution:
 
 - VPC networking
 - EC2-hosted Go services
-- RDS Single AZ
+- RDS (Single AZ)
 - SQS-based async processing
 - Basic observability
 
@@ -125,22 +153,23 @@ Future Evolution:
 
 - Failure is normal
 - Stateless compute
-- Asynchronous first
+- Asynchronous processing first
 - Observability by default
 - Infrastructure as Code
 - Cost-aware scalability
+- Automation over normal operations
 
 ---
 
 📁 Repository Structure
 
 ```bash
-aegis-cloud-platform/
+aegis-multiregion-platform/
 ├── docs/
 ├── infra/
 ├── services/
-├── k8s/
 ├── observability/
+├── simulations/
 └── scripts/
 ```
 See `docs/architecture.md` for detailed system design.
@@ -149,7 +178,7 @@ See `docs/architecture.md` for detailed system design.
 
 🧪 Reliability & Testing
 
-Planned simulations:
+Planned failure simulations include:
 
 - Pod failure
 - Node failure
@@ -167,11 +196,15 @@ docs/incident-reports/
 
 ## 📊 Metrics & SLOs (Planned)
 
-- Availability target: 99.9%+
+Availability target: **99.9%+**
+
+Key reliability metrics:
+
 - Error rate thresholds
-- Latency percentile tracking
-- MTTR measurement
+- Request latency percentiles (p50 / p95 / p99)
+- Mean Time To Recovery (MTTR)
 - Replication lag monitoring
+- Queue backlog depth
 
 
 ---
@@ -195,28 +228,37 @@ AEGIS is built as:
 - A distributed systems learning laboratory
 - A cloud platform engineering case study
 - A resilience-first infrastructure blueprint
-- A portfolio demonstration for product-company infrastructure roles
+- A portfolio project for infrastructure engineering roles
 
 ---
 
 🚀 Current Status
 
-> Project Initialized - v0.1
-> AWS Account configured
-> Architecture design drafted
+> Project Status: **Early Development (Phase I)**
+
+Completed:
+
+- AWS Account configured
+- Initial architecture designed
+- Repository initialized
 
 ---
 
-📚 Related Articles
+## ⚙ Local Development Setup
 
-(*Will link Medium posts here as they are published*)
+Clone the repository
 
----
+git clone https://github.com/ChiragVenkateshaiah/aegis-multiregion-platform
 
-👤 Author
+Initialize Terraform
 
-Chirag Venkateshaiah
+terraform init
 
-Cloud-Native Platform Engineering Track
+Plan infrastructure
 
-Remote-first infrastructure focus
+terraform plan
+
+Apply infrastructure
+
+terraform apply
+

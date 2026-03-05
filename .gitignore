@@ -1,0 +1,45 @@
+# -------------------
+# AWS Credentials
+# -------------------
+.aws/
+*.pem
+*.key
+credentials
+config
+
+# --------------------------
+# Terraform
+# --------------------------
+*.tfstate
+*tfstate.*
+.terraform/
+terraform.tfvars
+terraform.tfvars.json
+*.auto.tfvars
+*.tfplan
+
+# ---------------------------
+# Environment Variables
+# ---------------------------
+.env
+.env.*
+
+# ---------------------------
+# Logs
+# ---------------------------
+*.log
+logs/
+
+# ---------------------------
+# OS / Editor
+# ---------------------------
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# ---------------------------
+# Go
+# ---------------------------
+bin/
+pkg/
