@@ -26,6 +26,7 @@ The goal of this architecture is to simulate a **production-style distributed cl
 This architecture represents the **initial stable design (~70%)** of the system.
 
 Future architecture decisions will be documented using **Architecture Decision Records (ADR).**
+
 ---
 
 ### 1.2 System Overview
