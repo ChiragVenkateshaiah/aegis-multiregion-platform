@@ -663,6 +663,16 @@ Docker containers are used to package application services for consistent deploy
 
 ---
 
+## 11. Architecture Diagrams
+
+[System Context Diagram](/diagrams/aegis-system-context.md)
+
+[Container Diagram](/diagrams/aegis-container-diagram.md)
+
+
+
+
+
 ## 11. Data Model Overview
 
 The system uses a **ledger-based storage model.**
