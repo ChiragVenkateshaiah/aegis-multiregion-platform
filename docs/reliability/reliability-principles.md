@@ -127,7 +127,7 @@ Horizontal scalability allows the platform to handle increasing traffic without 
 
 ---
 
-## 7. Loose Coupling Through Asysnchronous Processing
+## 7. Loose Coupling Through Asynchronous Processing
 
 Services in AEGIS communicate through asynchronous messaging.
 
