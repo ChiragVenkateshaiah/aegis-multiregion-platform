@@ -1,0 +1,20 @@
+flowchart LR
+
+user["Client"]
+
+dns["Route53 DNS Failover"]
+
+region1["Primary Region"]
+
+region2["Secondary Region"]
+
+user --> dns
+
+dns --> region1
+dns --> region2
+
+region1 -. outrage .-> dns
+
+dns --> region2
+```
+
