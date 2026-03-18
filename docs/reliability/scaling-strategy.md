@@ -83,6 +83,15 @@ Worker scaling allows the platform to process large volumnes of transacitons eff
 
 ## 5. Database Scaling
 
+The ledger database must support reliable transaction storage while handling increasing workload.
+
+Scaling strategies include:
+
+Primary  Database
+
+Handles trasaction writes and maintains data consistency.
+
+
 
 
 
