@@ -1,264 +1,101 @@
-# 🛡 AEGIS — Cloud-Native Resilient Platform
+# 🛡 AEGIS — Multi-Region Resilient Payment Processing Platform
 
-> A production-grade, cloud-native infrastructure platform built on AWS to simulate real-world distributed systems, multi-region resilience, and internal developer enablement.
+AEGIS is a production-grade distributed payment processing platform designed to demonstrate **reliability engineering, event-driven architecture, and multi-region infrastructure design.**
 
----
-
-## 🌎 Project Overview
-
-AEGIS is an infrastructure engineering project designed to simulate a **resilient cloud platform** operating under real-world distributed system constraints.
-
-The project explores how modern cloud platforms are designed to handle:
-
-- Regional failures
-- Distributed workloads
-- Service scalability
-- Infrastructure automation
-- Observability and reliability engineering
-
-The goal is to explore how **modern cloud platforms are architected and operated in production **environments.**
+The platform simulates how modern financial systems process high-volume transactions while maintaining **high availability, fault tolerance, and observability.**
 
 ---
 
+## Table of Contents
 
-AEGIS is a cloud-native, event-driven infrastructure platform designed to demonstrate:
+- [🛡 AEGIS — Multi-Region Resilient Payment Processing Platform](#-aegis--multi-region-resilient-payment-processing-platform)
+  - [Table of Contents](#table-of-contents)
+  - [System Architecture Diagram](#system-architecture-diagram)
+  - [What AEGIS Is](#what-aegis-is)
+  - [Architecture Overview](#architecture-overview)
+  - [Core System Components](#core-system-components)
+    - [Payment API](#payment-api)
+    - [Messaging Layer](#messaging-layer)
+    - [Transaction Processor](#transaction-processor)
+    - [Ledger Database](#ledger-database)
+    - [Observability](#observability)
+  - [Technology Stack](#technology-stack)
 
-- Production-ready cloud networking
-- Kubernetes-native service deployment
-- Distributed systems resilience
-- Multi-region failover strategy
-- Observability and reliability engineering
-- Cost-aware architectural tradeoffs
 
-This project simulates the responsibilites of Platform Engineering team inside a product company, where internal teams depend on reliable infrastructure foundations.
 
----
+## System Architecture Diagram
 
-## ✍🏼 Engineering Blog Series
 
-The engineering journey behind AEGIS is documented as a technical blog series.
+```bash
+ADD Diagram HERE!
+```
 
-Part 1 - Development Environment Setup
-Part 2 - Multi-Region Architecture Design *(coming next)*
-Part 3 - AWS Network Topology
-Part 4 - Infrastructure as Code
+
+This diagram represents the high-level architecture of the AEGIS platform, including the API layer, messaging infrastructure, worker services, and the ledger database.
+
 
 ---
 
 
-## 🎯 Vision
+## What AEGIS Is
 
-> Design for failure. Operate for resilience. Optimize for cost.
+AEGIS is a **distributed event-driven payment processing platform** built to demonstrate how modern systems achieve **reliability and scalability.**
 
-AEGIS explores how modern distributed systems are designed under real-world constraints:
+The project focuses on architectural patterns used in production financial systems such as:
 
-- Infrastructure failure is inevitable
-- Regional outages are possible
-- Latency and scale are unpredictable
-- Cost constraints influence architecture decisions
+- asynchronous event processing
+- service decoupling through messaging
+- distributed fault tolerance
+- observability and monitoring
+- disaster recovery strategies
 
-The system evolves from a single-region deployment to a multi-region resilient architecture.
-
----
-
-## 🏗 High-Level Architecture
-![AEGIS Architecture](/diagrams/v0.1_architecture_diagram.png)
-
-Core request flow:
-
-User Request
-- Application Load Balancer
-- API Service (Go)
-- SQS (Async Processing)
-- Worker Service
-- RDS (PostgreSQL)
-
-
-Future Evolution:
-
-- Kubernetes (EKS)
-- Autoscaling
-- Observability stack
-- Cross-region replication
-- Route53 failover
+AEGIS is designed as a **learning and portfolio platform** to showcase system design, infrastructure architecture, and reliability engineering practices.
 
 ---
 
-## 🧱 Tech Stack
+## Architecture Overview
 
-### Cloud Provider
+AEGIS follows an event-driven microservice architecture.
 
-- AWS
+Transaction request ae received by the Payment API, which publishes events to a distributed messaging system. Worker services process these events asynchronously and update the ledger database.
 
-### Infrastructure
+This design ensures:
 
-- VPC
-- EC2
-- RDS
-- SQS
-- Application Load Balancer
-- Route53 (Phase II+)
-- EKS (Phase II)
+- decoupled service communication
+- scalable transaction processing
+- resilience against service failures
+- improved system reliability
 
-### Language
+The architecture is intentionally designed to simulate **real-world distributed systems used in financial infrastructure.**
 
-- Go
+---
 
-### Containerization
+## Core System Components
 
-- Docker
-- Kubernetes (EKS)
+### Payment API
 
-### Infrastructure as Code
+Receives transaction requests and validates incoming payments before publishing events to the messaging system.
 
-- Terraform
+### Messaging Layer
+
+A distributed messaging system (Kafka) enables asynchronous communication between services.
+
+### Transaction Processor
+
+Worker services consume transaction events and process payments.
+
+### Ledger Database
+
+A PostgreSQL database implementing a **financial ledger model** for consistent transaction recording.
 
 ### Observability
 
-- Prometheus
-- Grafana
-- AWS CloudWatch
+Prometheus and Grafana monitor system health, performance metrics, and service behavior.
 
 ---
 
-## 📈 Architecture Evolution Roadmap
-
-### Phase I - Single Region (Free-Tier Compatible)
-
-- VPC networking
-- EC2-hosted Go services
-- RDS (Single AZ)
-- SQS-based async processing
-- Basic observability
-
-### Phase II - Kubernetes Native
-
-- EKS deployment
-- Horizontal Pod Autoscaling
-- Rolling updates
-- Centralized logging
-- SLO definition
-
-### Phase III - Multi-Region Resilience
-
-- Cross-region RDS replication
-- Route53 DNS failover
-- Region promotion strategy
-- RPO / RTO measurement
-- Chaos testing
-
----
-
-## 🛡 Design Principles
-
-- Failure is normal
-- Stateless compute
-- Asynchronous processing first
-- Observability by default
-- Infrastructure as Code
-- Cost-aware scalability
-- Automation over normal operations
-
----
-
-📁 Repository Structure
-
-```bash
-aegis-multiregion-platform/
-├── docs/
-├── infra/
-├── services/
-├── observability/
-├── simulations/
-└── scripts/
-```
-See `docs/architecture.md` for detailed system design.
-
----
-
-🧪 Reliability & Testing
-
-Planned failure simulations include:
-
-- Pod failure
-- Node failure
-- Database outage
-- Regional failover
-- Network partition scenarios
-
-Postmortems and incident reports will be documented under:
-
-```bash
-docs/incident-reports/
-```
-
----
-
-## 📊 Metrics & SLOs (Planned)
-
-Availability target: **99.9%+**
-
-Key reliability metrics:
-
-- Error rate thresholds
-- Request latency percentiles (p50 / p95 / p99)
-- Mean Time To Recovery (MTTR)
-- Replication lag monitoring
-- Queue backlog depth
+## Technology Stack
 
 
----
 
-💰 Cost Considerations
-
-AEGIS is initially designed to operate within AWS Tier constraints.
-
-Future phases will include:
-
-- Cost optimization analysis
-- High availability vs cost tradeoff modeling
-- Infrastructure right-sizing
-
----
-
-🧠 Why This Project Exists
-
-AEGIS is built as:
-
-- A distributed systems learning laboratory
-- A cloud platform engineering case study
-- A resilience-first infrastructure blueprint
-- A portfolio project for infrastructure engineering roles
-
----
-
-🚀 Current Status
-
-> Project Status: **Early Development (Phase I)**
-
-Completed:
-
-- AWS Account configured
-- Initial architecture designed
-- Repository initialized
-
----
-
-## ⚙ Local Development Setup
-
-Clone the repository
-
-git clone https://github.com/ChiragVenkateshaiah/aegis-multiregion-platform
-
-Initialize Terraform
-
-terraform init
-
-Plan infrastructure
-
-terraform plan
-
-Apply infrastructure
-
-terraform apply
-
+[Back to Top](#table-of-contents)
