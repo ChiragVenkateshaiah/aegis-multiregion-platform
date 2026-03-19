@@ -37,7 +37,7 @@ If the primary database fails:
 3. Transaction processing resumes.
 
 
-## Relabillity Features
+## Reliability Features
 
 - Streaming replication
 - Automatic failover
