@@ -1,6 +1,6 @@
 # RFC-001: AEGIS Distributed Platform Architecture
 
-**Status: Draft**
+**Status: Accepted**
 
 **Author: Chirag Venkateshaiah**
 
@@ -30,7 +30,7 @@ This RFC does not define specific technology implementation, which will be cover
 
 ## 3. Architectural Principles
 
-Th architecture follows three primary distributed systems principles:
+The architecture follows three primary distributed systems principles:
 
 ### Reliability
 The platform must tolerate failures without losing financial transaction data.
@@ -71,6 +71,20 @@ WORKER1 --> DB[(Ledger Database)]
 WORKER2 --> DB
 ```
 
+### 5.1 Transition Processing Flow
+
+```mermaid
+sequenceDiagram
+
+Client->>API Gateway: Submit Transaction
+API Gateway->>Transaction Service: Validate Request
+Transaction Service->>Event Queue: Publish Transaction Event
+Event Queue->>Worker Service: Consume Event
+Worker Service->>Ledger Database: Update Ledger
+Worker Service-->>Monitoring System: Emit Metrics
+```
+
+
 ## 6. Component Responsibilities
 
 ### API Gateway
@@ -105,7 +119,7 @@ Responsibilities:
 - ledger updates
 - business rule execution
 
-Worker consume events from the queue and perform processing tasks.
+Workers consume events from the queue and perform processing tasks.
 
 
 ### Ledger Database
@@ -194,7 +208,7 @@ AEGIS will adopt a **distributed event-driven architecture** with asynchronous s
 
 Future RFCs will define:
 
-- technology slack
+- technology stack
 - deployment architecture
 - observability stack
 - data model
