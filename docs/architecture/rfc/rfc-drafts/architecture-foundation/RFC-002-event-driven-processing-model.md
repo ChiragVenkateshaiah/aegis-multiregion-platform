@@ -10,7 +10,7 @@
 
 This RFC defines the **event-driven processing model** used by the AEGIS platform.
 
-It establishes how services communicate using events, how transaction processing flows through the system, and how reliability concerns such as retries, idempotency, and failure handling are addressed.
+It specifies how events are produced, transported, consumed, and processed, including reliability guarantees, failure handling, and consistency behavior.
 
 ---
 
@@ -18,12 +18,13 @@ It establishes how services communicate using events, how transaction processing
 
 This RFC covers:
 
-- event communication model
 - event lifecycle
-- event schema structure
+- event schema
+- delivery semantics
 - worker processing model
 - retry and failure handling
 - idempotency guarantees
+- ordering and partitioning
 
 This RFC does **not define specific messaging technologies**, which will be addressed in later infrastructure RFCs.
 
@@ -143,7 +144,26 @@ Example transaction event:
 
 ---
 
-## 8. Worker Processing Model
+## 8. Delivery Semantics
+
+AEGIS adopts at-least-once delivery.
+
+This means:
+
+- events may be delivered multiple times
+- events are never silently lost
+
+---
+
+## 9. Acknowledgement Model
+
+- Event is acknowledge only after successful processing
+- If worker crashes before ack ➡ event is re-delivered
+- If ack fails ➡ event may be retired
+
+---
+
+## 10. Worker Processing Model
 
 Worker services follow a **pull-based consumption model.**
 
@@ -166,7 +186,7 @@ This model allows worker services to scale horizontally.
 
 ---
 
-## 9. Idempotency
+## 11. Idempotency
 
 Financial transaction systems must ensure that **duplicate events do not cause inconsistent state.**
 
@@ -180,7 +200,36 @@ Workers must verify whether a transaction has already been processed before appl
 
 ---
 
-## 10. Retry Strategy
+## 12. Ordering Guarantees
+
+AEGIS provides **partial ordering guarantees**:
+
+- ordering is preserved within a partition
+- no global ordering across the system
+
+For financial correctness:
+
+- events for same account must be routed to same partition
+
+---
+
+## 13. Partitioning Strategy
+
+Events are partitioned by:
+
+```bash
+account_id
+```
+
+Benefits:
+
+- ensures ordering per account
+- enables horizontal scaling
+- distributed load across workers
+
+---
+
+## 14. Retry Strategy
 
 Processing failures are expected in distributed systems.
 
@@ -200,7 +249,7 @@ Retry behavior:
 
 ---
 
-## 11. Dead Letter Handling
+## 15. Dead Letter Handling
 
 Events that repeatedly fail processing are moved to a **Dead Letter Queue (DLQ).**
 
@@ -214,7 +263,7 @@ DLQ events require manual investigation and remediation.
 
 ---
 
-## 12. Observability
+## 16. Observability
 
 The event processing system must expose metrics to monitor system health.
 
@@ -230,7 +279,7 @@ These metrics enable operators to detect processing delays or system failures.
 
 ---
 
-## 13. Consistency Model
+## 17. Consistency Model
 
 Due to asynchronous processing, AEGIS follows an **eventual consistency model.**
 
@@ -243,7 +292,55 @@ Eventual consistency allows the platform to achieve higher availability and scal
 
 ---
 
-## 14. Alternatives Considered
+## 18. Backpressure Handling
+
+System must handle overload scenarios.
+
+Strategies:
+
+- queue buffering
+- autoscaling workers
+- rate limiting at API
+
+---
+
+## 19. Event Schema & Versioning
+
+Events follow structured schema.
+
+Add:
+
+```json
+"version": "v1"
+```
+
+Versioning ensures:
+
+- backward compatibility
+- safe schema evolution
+
+---
+
+## 20. Failure Modes
+
+| Failure        | Handling      |
+| -------------- | ------------- |
+| Worker crash   | Event retried |
+| Queue overload | Buffered      |
+| DB failure     | Retry         |
+| Poison message | DLQ           |
+
+---
+
+## 21. Security Considerations
+
+- event payload validation
+- access control on producers/consumers
+- encryption in transit
+
+---
+
+## 22. Alternatives Considered
 
 ### Synchronous Processing
 
@@ -262,33 +359,28 @@ Rejected due to:
 
 ---
 
-## 15. Decision
-
-AEGIS will use an **asynchronous event-driven processing model** where transaction events are published to a queue and processed by worker services.
-
----
-
-## 16. Consequences
+## 23. Consequences
 
 ### Pros
 
-- scalable processing pipeline
-- improved system resilience
-- service decoupling
+- high scalability
+- strong reliability
+- decoupled services
 
 ### Cons
 
-- increased operational complexity
-- eventual consistency tradeoffs
+- duplicate handling complexity
+- operational overhead
+- eventual consistency
 
 ---
 
-## 17. Future Work
+## 24. Future Work
 
-Future RFCs will define:
+- schema registry
+- exactly-once exploration
+- replay tooling
+- audit pipelines
 
-- event schema registry
-- messaging infrastructure
-- worker scaling strategy
-- failure recovery mechanisms
+
 
