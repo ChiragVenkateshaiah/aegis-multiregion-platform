@@ -1,6 +1,6 @@
 # RFC-002: AEGIS Event Driven Processing Model
 
-**Status: Draft**
+**Status: Approved**
 **Author: Chirag Venkateshaiah**
 **Related RFC: RFC-001 Distributed Platform Architecture**
 
