@@ -1,10 +1,13 @@
-# RFC-002: AEGIS Event Driven Processing Model
+# RFC-003: AEGIS Service Boundaries & Domain Design
 
-**Status: Draft**
+**Status: Accepted**
+
 **Author: Chirag Venkateshaiah**
+
 Related RFCs: 
 - RFC-001 Distributed Platform Architecture
 - RFC-002 Event Driven Processing Model
+
 ---
 
 ## 1. Purpose
@@ -19,11 +22,11 @@ It establishes how the system is decomposed into independently deployable servic
 
 This RFC covers:
 
-- service decomposition strategy
-- domain boundaries
-- data ownership model
-- inter-service communication
-- anti-patterns and constraints
+- domain-driven service decomposition
+- service responsibilities and ownership
+- data ownership boundaries
+- inter-service communication patterns
+- architectural constraints and anti-patterns
 
 ---
 
@@ -31,7 +34,7 @@ This RFC covers:
 
 ### 3.1 Domain-Oriented Design
 
-Service are defined around business domains, not technical layers.
+Service are defined around **business capabilities**, not infrastructure layers.
 
 
 ### 3.2 Single Responsibility per Service
@@ -40,21 +43,24 @@ Each service owns:
 
 - one domain
 - one data model
-- one set of responsibilities
+- one responsibilites boundary
 
-### 3.3 Data Ownership
-
-Each service:
-
-- owns its database
-- does not directly access another service's database
+### 3.3 Strict Data Ownership
+- Each service owns its database
+- No direct cross-service database access
+- All communication via APIs or events
 
 ### 3.4 Loose Coupling
+- asynchronous communication preferred
+- synchronous communication limited to queries
 
-Service interact via:
+### 3.5 System of Record Isolation
 
-- events (preferred)
-- APIs (when necessary)
+Critical domains (e.g., Ledger) must be:
+- isolated
+- strongly consistent
+- protected from external writes
+
 
 ---
 
@@ -81,19 +87,17 @@ AEGIS is divided into the following core domains:
 ### 5.1 Payment Service
 
 #### Responsibility
-
 - accept transaction requests
 - validate input
-- initiate transaction events
+- enforce idempotency
+- publish transaction events
 
 #### Owns
-
 - transaction requests
 - idempotency keys
 
-#### Does NOT
-
-- update ledger directly
+#### Constraints
+- must not modify ledger directly
 
 ### 5.2 Account Service
 
@@ -110,31 +114,30 @@ AEGIS is divided into the following core domains:
 ### 5.3 Ledger Service (Critical Domain)
 
 #### Responsibility
-
 - maintain financial correctness
 - update balances
 - store transaction history
 
 #### Owns
-
 - ledger entries
 - account balances
 
 #### Constraints
-
-- must be strongly consistent internally
-- must be idempotent
+- strongly consistent
+- idempotent
+- append-only ledger model
 
 ### 5.4 Notification Service
 
 #### Responsibility
-
-- notify users of transaction results
+- deliver transaction notifications
+- handle retries and delivery status
 
 #### Owns
-
 - notification state
 - delivery logs
+
+---
 
 ## 6. Domain Interaction Model
 
@@ -146,8 +149,21 @@ Payment Service->>Event Queue: Publish Event
 Event Queue->>Ledger Service: Process Transaction
 Ledger Service->>Notification Service: Emit Event
 ```
+---
 
-## 7. Data Ownership Model
+## 7. Communication Patterns
+| Pattern      | Usage             |
+| ------------ | ----------------- |
+| Event-driven | state changes     |
+| API          | queries / lookups |
+
+#### Rule
+- Events = source of truth for state transitions
+- APIs = read access only
+
+---
+
+## 8. Data Ownership Model
 
 Each service owns its own datastore.
 
@@ -169,21 +185,20 @@ This is critical.
 
 ---
 
-## 8. API vs Event Communication
+## 9. Service Contracts
 
-| Communication Type | Use Case            |
-| ------------------ | ------------------- |
-| API                | synchronous queries |
-| Event              | state changes       |
+Each service exposes:
 
-Example
+### API Contracts
+- REST/gRPC interfaces for queries
 
-- Payment ➡ Ledger ➡ Event
-- Account lookup ➡ API call
+### Event Contracts
+- well-defined event schemas
+- versioned contracts
 
 ---
 
-## 9. Service Boundaries Rationale
+## 10. Service Boundaries Rationale
 
 Why this decomposition?
 
@@ -194,12 +209,12 @@ Why this decomposition?
 
 ### Ledger isolation
 
-- critical system = strict control
-- avoids corruption
+- single source of truth
+- protects financial correctness
 
 ---
 
-## 10. Anti-Pattern Avoided
+## 11. Anti-Pattern Avoided
 
 ### Distributed Monolith
 
@@ -224,10 +239,11 @@ API → Service A → Service B → Service C
 Leads to:
 
 - cascading failures
+- latency amplification
 
 ---
 
-## 11. Scaling Model
+## 12. Scaling Model
 
 Each service scales independently:
 
@@ -238,7 +254,7 @@ Each service scales independently:
 | Worker Services | horizontal scaling |
 | Notification    | burst scaling      |
 
-## 12. Failure Isolation
+## 13. Failure Isolation
 
 Failures are contained:
 
@@ -246,54 +262,52 @@ Failures are contained:
 - Notification failure ➡ no transaction loss
 - Worker failure ➡ retriable
 
-## 13. Consistency Model Across Domains
+## 14. Consistency Model Across Domains
 
 | Domain | Consistency |
 | ------ | ----------- |
 | Ledger | Strong      |
 | Others | Eventual    |
 
-## 14. Security Boundaries
+## 15. Security Boundaries
 
 Each service enforces:
-
 - authentication
 - authorization
 - service-level access control
 
 ---
 
-## 15. Evolution Strategy
+## 16. Evolution Strategy
 
 Future service may include:
-
 - Fraud Detection Service
 - Audit Service
 - Analytics Pipeline
 
-## 16. Decision
+## 17. Decision
 
-AEGIS adopts a domain-oriented microservices architecture with strict data ownership and event-driven interaction.
+AEGIS adopts a domain-driven microservices architecture with strict service boundaries and event-driven communication.
 
-## 17. Consequences
+## 18. Consequences
 
 ### Pros
 
 - clear ownership
-- scalable services
+- scalable architecture
 - fault isolation
 
 ### Cons
 
-- distributed complexity
-- cross-service debugging
+- increased operational complexity
+- distributed debugging challenges
 
 ---
 
-## 18. Future Work
+## 19. Future Work
 
-- service contracts (API specs)
+- API specifications
 - schema registry
+- service SLAs
 - domain event catalog
-- services SLAs
 
